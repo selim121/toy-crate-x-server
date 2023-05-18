@@ -40,7 +40,7 @@ async function run() {
     const usersCollection = client.db("toyCrateX").collection("users");
     const toysCollection = client.db("toyCrateX").collection("toys");
 
-    //users
+    //user-details
     app.post('/users', async(req, res) => {
         const user = req.body;
         const result = await usersCollection.insertOne(user);
@@ -54,7 +54,7 @@ async function run() {
         res.send(result);
     })
     
-    //toys
+    //all-toys
     app.post('/toys', async(req, res) => {
         const toy = req.body;
         const result = await toysCollection.insertOne(toy);
@@ -64,6 +64,14 @@ async function run() {
     app.get('/allToys', async(req, res) => {
         const result = await toysCollection.find({}).toArray();
         res.send(result);
+    })
+
+    //my-toys
+    app.get('/my-toys/:email', async(req, res) => {
+        const toys = await toysCollection.find({
+            email: req.params.email,
+        }).toArray();
+        res.send(toys);
     })
 
 
