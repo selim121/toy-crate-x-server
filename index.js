@@ -35,7 +35,9 @@ async function run() {
       
 
     const usersCollection = client.db("toyCrateX").collection("users");
+    const toysCollection = client.db("toyCrateX").collection("toys");
 
+    //users
     app.post('/users', async(req, res) => {
         const user = req.body;
         const result = await usersCollection.insertOne(user);
@@ -43,11 +45,23 @@ async function run() {
         console.log(result);
     })
 
+    
     app.get('/allUsers', async(req, res) => {
         const result = await usersCollection.find({}).toArray();
         res.send(result);
     })
+    
+    //toys
+    app.post('/toys', async(req, res) => {
+        const toy = req.body;
+        const result = await toysCollection.insertOne(toy);
+        console.log(result);
+    })
 
+    app.get('/allToys', async(req, res) => {
+        const result = await toysCollection.find({}).toArray();
+        res.send(result);
+    })
 
 
     // Send a ping to confirm a successful connection
