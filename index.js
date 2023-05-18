@@ -28,11 +28,23 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
 
+    app.use((req, res, next) => {
+        res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
+        next();
+      });
+      
+
     const usersCollection = client.db("toyCrateX").collection("users");
 
     app.post('/users', async(req, res) => {
-        const body = req.body;
-        const result = await usersCollection.insertOne(body);
+        const user = req.body;
+        const result = await usersCollection.insertOne(user);
+        res.send(result);
+        console.log(result);
+    })
+
+    app.get('/allUsers', async(req, res) => {
+        const result = await usersCollection.find({}).toArray();
         res.send(result);
     })
 
