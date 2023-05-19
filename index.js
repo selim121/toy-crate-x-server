@@ -73,6 +73,20 @@ async function run() {
         res.send(result);
     })
 
+    //sorting
+    app.get('/my-toys/:email/ascending', async(req, res) => {
+        const toys = await toysCollection.find({
+            email: req.params.email,
+        }).sort({ price: 1 }).toArray();
+        res.send(toys);
+    })
+    app.get('/my-toys/:email/descending', async(req, res) => {
+        const toys = await toysCollection.find({
+            email: req.params.email,
+        }).sort({ price: -1 }).toArray();
+        res.send(toys);
+    })
+
     //category
     app.get('/toy/:subCategory', async(req, res) => {
         const toy = await toysCollection.find({
