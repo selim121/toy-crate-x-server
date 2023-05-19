@@ -29,9 +29,6 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
 
-    
-      
-
     const usersCollection = client.db("toyCrateX").collection("users");
     const toysCollection = client.db("toyCrateX").collection("toys");
 
@@ -84,7 +81,7 @@ async function run() {
         res.send(toy)
     })
 
-    //delete item
+    //delete toy
     app.delete('/toys/:id', async(req, res) => {
         const id = req.params.id;
         const query = {_id: new ObjectId(id)};
@@ -92,6 +89,44 @@ async function run() {
         res.send(result);
     })
 
+    //update toy
+    app.get('/toy/update/:id', async(req, res) => {
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)};
+        const result = await toysCollection.findOne(query);
+        res.send(result);
+    })
+
+    app.put('/toy/update/:id', async(req, res) => {
+        const id = req.params.id;
+        const body = req.body;
+        console.log(body);
+        const filter = {_id: new ObjectId(id)};
+        const updateDoc = {
+            $set: {
+                price: body.price,
+                quantity: body.quantity,
+                details: body.details,
+            },
+        };
+        const result = await toysCollection.updateOne(filter, updateDoc);
+        res.send(result);
+    })
+
+    //search toy by name
+    const indexKeys = {productName: 1};
+    const indexOption = {name: 'productName'};
+    const result = await toysCollection.createIndex(indexKeys, indexOption);
+
+    app.get('/toySearchByName/:productName', async(req, res) => {
+        const searchText = req.params.productName;
+        const result = await toysCollection.find({
+            $or: [
+                {productName: {$regex: searchText, $options: 'i'}},
+            ]
+        }).toArray();
+        res.send(result);
+    })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
