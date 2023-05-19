@@ -53,7 +53,7 @@ async function run() {
     app.post('/toys', async(req, res) => {
         const toy = req.body;
         const result = await toysCollection.insertOne(toy);
-        console.log(result);
+        res.send(result);
     })
 
     app.get('/allToys', async(req, res) => {
@@ -82,6 +82,14 @@ async function run() {
             subCategory: req.params.subCategory,
         }).toArray();
         res.send(toy)
+    })
+
+    //delete item
+    app.delete('/toys/:id', async(req, res) => {
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)};
+        const result = await toysCollection.deleteOne(query);
+        res.send(result);
     })
 
 
