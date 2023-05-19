@@ -15,11 +15,6 @@ app.use(express.json());
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.d18ofon.mongodb.net/?retryWrites=true&w=majority`;
 
 
-app.use((req, res, next) => {
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5173');
-    next();
-  });
-
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
 const client = new MongoClient(uri, {
   serverApi: {
@@ -79,6 +74,14 @@ async function run() {
         const query = {_id: new ObjectId(id)};
         const result = await toysCollection.findOne(query);
         res.send(result);
+    })
+
+    //category
+    app.get('/toy/:subCategory', async(req, res) => {
+        const toy = await toysCollection.find({
+            subCategory: req.params.subCategory,
+        }).toArray();
+        res.send(toy)
     })
 
 
