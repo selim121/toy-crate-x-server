@@ -9,6 +9,7 @@ const port = process.env.PORT || 4000;
 //middleware
 app.use(cors());
 app.use(express.json());
+    
 
 
 
@@ -113,17 +114,23 @@ async function run() {
 
     app.put('/toy/update/:id', async(req, res) => {
         const id = req.params.id;
-        const body = req.body;
-        console.log(body);
         const filter = {_id: new ObjectId(id)};
-        const updateDoc = {
+        const options = {upsert: true};
+        const updateToy = req.body;
+        const toy = {
             $set: {
-                price: body.price,
-                quantity: body.quantity,
-                details: body.details,
+                name: updateToy.name,
+                email: updateToy.email,
+                productName: updateToy.productName,
+                subCategory: updateToy.subCategory,
+                price: updateToy.price,
+                quantity: updateToy.quantity,
+                rating: updateToy.rating,
+                toyPhoto: updateToy.toyPhoto,
+                details: updateToy.details,
             },
         };
-        const result = await toysCollection.updateOne(filter, updateDoc);
+        const result = await toysCollection.updateOne(filter, toy, options);
         res.send(result);
     })
 
